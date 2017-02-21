@@ -150,23 +150,26 @@ public class GameState extends State {
 
 	@Override
 	public void handleInput() {
-		if(Gdx.input.justTouched()) {
-			shots--;
-			if (shots >= 0) {
-				mouse.x = Gdx.input.getX();
-				mouse.y = Gdx.input.getY();
-				cam.unproject(mouse);
-				for (int i = 0; i < 2; i++) {
-					if (duck[i].contains(mouse.x, mouse.y) && duck[i].isClickable()) {
-						duck[i].onClick();
-						score += duck[i].getValue();
-						for (int j = 0; j < 6; j++) scoreCount[j] = whiteNum[(score/(int)Math.pow(10, j))%10];
-						duckHit++;
-						birdIcon[duckHit - 1] = DuckHunt.res.getAtlas("pack").findRegion("hit");
-					}
-				}
-			}
-		}
+                if( ! Gdx.input.justTouched())
+                    return;
+        
+                if (shots-- < 0)
+                    return;
+        
+                mouse.x = Gdx.input.getX();
+                mouse.y = Gdx.input.getY();
+        
+                cam.unproject(mouse);
+        
+                for (int i = 0; i < 2; i++) {
+                    if (duck[i].contains(mouse.x, mouse.y) && duck[i].isClickable()) {
+                        duck[i].onClick();
+                        score += duck[i].getValue();
+                        for (int j = 0; j < 6; j++) scoreCount[j] = whiteNum[(score/(int)Math.pow(10, j))%10];
+                        duckHit++;
+                        birdIcon[duckHit - 1] = DuckHunt.res.getAtlas("pack").findRegion("hit");
+                    }
+                }
 	}
 
 }
