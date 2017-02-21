@@ -1,0 +1,250 @@
+
+pack.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bg
+  rotate: false
+  xy: 1, 10
+  size: 256, 240
+  orig: 256, 240
+  offset: 0, 0
+  index: -1
+skyShot
+  rotate: false
+  xy: 259, 94
+  size: 256, 156
+  orig: 256, 156
+  offset: 0, 0
+  index: -1
+dogWalk
+  rotate: false
+  xy: 517, 205
+  size: 300, 45
+  orig: 300, 45
+  offset: 0, 0
+  index: -1
+grass
+  rotate: false
+  xy: 259, 56
+  size: 256, 36
+  orig: 256, 36
+  offset: 0, 0
+  index: -1
+tree
+  rotate: false
+  xy: 517, 80
+  size: 69, 123
+  orig: 69, 123
+  offset: 0, 0
+  index: -1
+duck1Angled
+  rotate: false
+  xy: 819, 216
+  size: 120, 34
+  orig: 120, 34
+  offset: 0, 0
+  index: -1
+duck2Angled
+  rotate: false
+  xy: 259, 20
+  size: 120, 34
+  orig: 120, 34
+  offset: 0, 0
+  index: -1
+duck3Angled
+  rotate: false
+  xy: 588, 169
+  size: 120, 34
+  orig: 120, 34
+  offset: 0, 0
+  index: -1
+duck1Side
+  rotate: false
+  xy: 381, 21
+  size: 120, 33
+  orig: 120, 33
+  offset: 0, 0
+  index: -1
+duck2Side
+  rotate: false
+  xy: 588, 134
+  size: 120, 33
+  orig: 120, 33
+  offset: 0, 0
+  index: -1
+duck3Side
+  rotate: false
+  xy: 588, 99
+  size: 120, 33
+  orig: 120, 33
+  offset: 0, 0
+  index: -1
+dogJump
+  rotate: false
+  xy: 710, 153
+  size: 80, 50
+  orig: 80, 50
+  offset: 0, 0
+  index: -1
+hitBox
+  rotate: false
+  xy: 588, 79
+  size: 113, 18
+  orig: 113, 18
+  offset: 0, 0
+  index: -1
+dogAlert
+  rotate: false
+  xy: 710, 103
+  size: 53, 48
+  orig: 53, 48
+  offset: 0, 0
+  index: -1
+dogLaugh
+  rotate: false
+  xy: 941, 210
+  size: 60, 40
+  orig: 60, 40
+  offset: 0, 0
+  index: -1
+flyAway
+  rotate: false
+  xy: 819, 197
+  size: 73, 17
+  orig: 73, 17
+  offset: 0, 0
+  index: -1
+dog2Duck
+  rotate: false
+  xy: 517, 39
+  size: 56, 39
+  orig: 56, 39
+  offset: 0, 0
+  index: -1
+dog1Duck
+  rotate: false
+  xy: 575, 38
+  size: 43, 39
+  orig: 43, 39
+  offset: 0, 0
+  index: -1
+duck1Fall
+  rotate: false
+  xy: 620, 46
+  size: 40, 31
+  orig: 40, 31
+  offset: 0, 0
+  index: -1
+duck2Fall
+  rotate: false
+  xy: 662, 46
+  size: 40, 31
+  orig: 40, 31
+  offset: 0, 0
+  index: -1
+duck3Fall
+  rotate: false
+  xy: 894, 183
+  size: 40, 31
+  orig: 40, 31
+  offset: 0, 0
+  index: -1
+scoreBox
+  rotate: false
+  xy: 936, 191
+  size: 49, 17
+  orig: 49, 17
+  offset: 0, 0
+  index: -1
+duck1Shot
+  rotate: false
+  xy: 765, 122
+  size: 31, 29
+  orig: 31, 29
+  offset: 0, 0
+  index: -1
+numGreen
+  rotate: false
+  xy: 259, 4
+  size: 42, 14
+  orig: 42, 14
+  offset: 0, 0
+  index: -1
+numWhite
+  rotate: false
+  xy: 303, 4
+  size: 42, 14
+  orig: 42, 14
+  offset: 0, 0
+  index: -1
+duck2Shot
+  rotate: false
+  xy: 765, 91
+  size: 31, 29
+  orig: 31, 29
+  offset: 0, 0
+  index: -1
+shot
+  rotate: false
+  xy: 347, 1
+  size: 26, 17
+  orig: 26, 17
+  offset: 0, 0
+  index: -1
+duck3Shot
+  rotate: false
+  xy: 620, 15
+  size: 31, 29
+  orig: 31, 29
+  offset: 0, 0
+  index: -1
+roundCount
+  rotate: false
+  xy: 792, 195
+  size: 24, 8
+  orig: 24, 8
+  offset: 0, 0
+  index: -1
+1000points
+  rotate: false
+  xy: 1003, 243
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1
+1500points
+  rotate: false
+  xy: 987, 201
+  size: 14, 7
+  orig: 14, 7
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 1019, 243
+  size: 4, 7
+  orig: 4, 7
+  offset: 0, 0
+  index: -1
+500points
+  rotate: false
+  xy: 503, 47
+  size: 11, 7
+  orig: 11, 7
+  offset: 0, 0
+  index: -1
+hit
+  rotate: false
+  xy: 1, 1
+  size: 7, 7
+  orig: 7, 7
+  offset: 0, 0
+  index: -1
+notHit
+  rotate: false
+  xy: 653, 37
+  size: 7, 7
+  orig: 7, 7
+  offset: 0, 0
+  index: -1
