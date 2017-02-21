@@ -17,5 +17,5 @@ In Eclipse...
 
 ## Running
 
-1. Open DesktopLauncher.java in Ballistic-desktop
+1. Open DesktopLauncher.java in DuckHunt-desktop
 2. Run
