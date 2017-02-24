@@ -153,7 +153,7 @@ public class GameState extends State {
                 if( ! Gdx.input.justTouched())
                     return;
         
-                if (shots-- < 0)
+                if (--shots < 0)
                     return;
         
                 mouse.x = Gdx.input.getX();
