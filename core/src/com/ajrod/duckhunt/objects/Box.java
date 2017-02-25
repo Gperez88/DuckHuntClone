@@ -35,10 +35,4 @@ public abstract class Box {
     private static boolean valuesAreWithinRadius(float a, float b, float radius) {
         return Math.abs(b - a) < radius;
     }
-
-    abstract public void update(float dt);
-
-    abstract public void render(SpriteBatch sb);
-
-    abstract public void onClick();
 }

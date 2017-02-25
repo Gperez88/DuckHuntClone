@@ -89,7 +89,6 @@ public class Duck extends Box {
         isClickable = true;
     }
 
-    @Override
     public void update(float dt) {
         if (isShot) {
             fallTime += dt;
@@ -146,7 +145,6 @@ public class Duck extends Box {
         }
     }
 
-    @Override
     public void render(SpriteBatch sb) {
         float x = center.x;
         float y = center.y;
@@ -186,7 +184,6 @@ public class Duck extends Box {
             }
     }
 
-    @Override
     public void onClick() {
         if (isClickable) {
             isShot = true;

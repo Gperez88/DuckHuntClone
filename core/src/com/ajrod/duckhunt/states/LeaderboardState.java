@@ -1,7 +1,8 @@
 package com.ajrod.duckhunt.states;
 
 import com.ajrod.duckhunt.DuckHunt;
-import com.ajrod.duckhunt.objects.Button;
+import com.ajrod.duckhunt.objects.Button.BackButton;
+import com.ajrod.duckhunt.objects.Button.Button;
 import com.ajrod.duckhunt.objects.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,12 +11,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class LeaderboardState extends State {
 
-    private Button b;
+    private Button backButton;
     private TextureRegion bg;
 
     public LeaderboardState(GSM gsm) {
         super(gsm);
-        b = new Button(new Point(DuckHunt.WIDTH / 2, 100), 2);
+        backButton = new BackButton(new Point(DuckHunt.WIDTH / 2, 100));
         bg = new TextureRegion(new Texture(Gdx.files.internal("bg.png")));
     }
 
@@ -32,7 +33,7 @@ public class LeaderboardState extends State {
         for (int i = 0; i < 10; i++)
             DuckHunt.font.draw(sb, (i + 1) + ".	.	.	.	" + DuckHunt.scores[9 - i], 300, (DuckHunt.HEIGHT - 50) - 30 * i);
         DuckHunt.font.setScale(1f);
-        b.render(sb);
+        backButton.render(sb);
         sb.end();
     }
 
@@ -48,7 +49,7 @@ public class LeaderboardState extends State {
 
         Point clickedPoint = new Point(mouse.x, mouse.y);
 
-        if (b.contains(clickedPoint))
+        if (backButton.contains(clickedPoint))
             gsm.set(new MenuState(gsm));
     }
 }
