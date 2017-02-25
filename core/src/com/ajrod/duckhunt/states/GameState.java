@@ -1,7 +1,10 @@
 package com.ajrod.duckhunt.states;
 
 import com.ajrod.duckhunt.DuckHunt;
-import com.ajrod.duckhunt.objects.Duck;
+import com.ajrod.duckhunt.objects.Duck.Duck;
+import com.ajrod.duckhunt.objects.Duck.EasyDuck;
+import com.ajrod.duckhunt.objects.Duck.HardDuck;
+import com.ajrod.duckhunt.objects.Duck.MediumDuck;
 import com.ajrod.duckhunt.objects.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,7 +38,7 @@ public class GameState extends State {
         duck = new Duck[2];
 
         for (int i = 0; i < 2; i++) {
-            duck[i] = new Duck(0);
+            duck[i] = new EasyDuck();
         }
 
         grass = DuckHunt.res.getAtlas("pack").findRegion("grass");
@@ -99,23 +102,23 @@ public class GameState extends State {
     private void resetDucks(float dt) {
         if (round < 4) {
             if (subRound > 3) {
-                duck[0] = new Duck(0);
-                duck[1] = new Duck(1);
+                duck[0] = new EasyDuck();
+                duck[1] = new MediumDuck();
             } else {
-                duck[0] = new Duck(0);
-                duck[1] = new Duck(0);
+                duck[0] = new EasyDuck();
+                duck[1] = new EasyDuck();
             }
         } else if (round < 7) {
             if (subRound > 3) {
-                duck[0] = new Duck(1);
-                duck[1] = new Duck(2);
+                duck[0] = new MediumDuck();
+                duck[1] = new HardDuck();
             } else {
-                duck[0] = new Duck(1);
-                duck[1] = new Duck(1);
+                duck[0] = new MediumDuck();
+                duck[1] = new MediumDuck();
             }
         } else {
-            duck[0] = new Duck(2);
-            duck[1] = new Duck(2);
+            duck[0] = new HardDuck();
+            duck[1] = new HardDuck();
         }
     }
 

@@ -1,17 +1,18 @@
-package com.ajrod.duckhunt.objects;
+package com.ajrod.duckhunt.objects.Duck;
 
 import com.ajrod.duckhunt.DuckHunt;
+import com.ajrod.duckhunt.objects.Box;
+import com.ajrod.duckhunt.objects.Point;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Random;
 
-public class Duck extends Box {
+public abstract class Duck extends Box {
 
     private final static int BOUNDS = 200;
-    private int speed, direction, value; // 0 -> left, 1 -> upleft, 2 -> upright, 3 -> right
+    protected int speed, direction, value; // 0 -> left, 1 -> upleft, 2 -> upright, 3 -> right
     private boolean offScreen, isShot, isFalling, isClickable;
     private float stateTime, fallTime, changeTime;
 
@@ -19,9 +20,17 @@ public class Duck extends Box {
     private TextureRegion shot, currentFrame;
     private Random rand;
 
-    public Duck(int mode) {
+    public Duck() {
+        this("duck1");
+    }
+
+    protected Duck(String resourceKey) {
         // TODO: change up code to not have to pass fake values to box constructor
         super(new Point(0, 0), 0, 0);
+        initializeDuck(resourceKey);
+    }
+
+    protected void initializeDuck(String resourceKey) {
         rand = new Random();
         currentFrame = new TextureRegion();
 
@@ -32,32 +41,13 @@ public class Duck extends Box {
         t2 = new TextureRegion[3];
         t3 = new TextureRegion[2];
 
-        switch (mode) {
-            case 0: // easy mode
-                side = DuckHunt.res.getAtlas("pack").findRegion("duck1Side").split(40, 33);
-                angle = DuckHunt.res.getAtlas("pack").findRegion("duck1Angled").split(40, 34);
-                dead = DuckHunt.res.getAtlas("pack").findRegion("duck1Fall").split(20, 31);
-                shot = DuckHunt.res.getAtlas("pack").findRegion("duck1Shot");
-                speed = 3;
-                value = 500;
-                break;
-            case 1: // normal mode
-                side = DuckHunt.res.getAtlas("pack").findRegion("duck2Side").split(40, 33);
-                angle = DuckHunt.res.getAtlas("pack").findRegion("duck2Angled").split(40, 34);
-                dead = DuckHunt.res.getAtlas("pack").findRegion("duck2Fall").split(20, 31);
-                shot = DuckHunt.res.getAtlas("pack").findRegion("duck2Shot");
-                speed = 6;
-                value = 1000;
-                break;
-            default: // hard mode
-                side = DuckHunt.res.getAtlas("pack").findRegion("duck3Side").split(40, 33);
-                angle = DuckHunt.res.getAtlas("pack").findRegion("duck3Angled").split(40, 34);
-                dead = DuckHunt.res.getAtlas("pack").findRegion("duck3Fall").split(20, 31);
-                shot = DuckHunt.res.getAtlas("pack").findRegion("duck3Shot");
-                speed = 9;
-                value = 1500;
-                break;
-        }
+        side = DuckHunt.res.getAtlas("pack").findRegion(resourceKey + "Side").split(40, 33);
+        angle = DuckHunt.res.getAtlas("pack").findRegion(resourceKey + "Angled").split(40, 34);
+        dead = DuckHunt.res.getAtlas("pack").findRegion(resourceKey + "Fall").split(20, 31);
+        shot = DuckHunt.res.getAtlas("pack").findRegion(resourceKey + "Shot");
+
+        speed = 3;
+        value = 500;
 
         for (int i = 0; i < 3; i++) {
             t1[i] = side[0][i];
@@ -69,9 +59,9 @@ public class Duck extends Box {
         this.angle = new Animation(0.1f, t2);
         this.dead = new Animation(0.1f, t3);
 
-        this.side.setPlayMode(PlayMode.LOOP_PINGPONG);
-        this.angle.setPlayMode(PlayMode.LOOP_PINGPONG);
-        this.dead.setPlayMode(PlayMode.LOOP_PINGPONG);
+        this.side.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        this.angle.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        this.dead.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
         direction = rand.nextInt(2) + 1;
 
