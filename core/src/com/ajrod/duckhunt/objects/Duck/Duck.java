@@ -20,10 +20,6 @@ public abstract class Duck extends Box {
     private TextureRegion shot, currentFrame;
     private Random rand;
 
-    public Duck() {
-        this("duck1");
-    }
-
     protected Duck(String resourceKey) {
         // TODO: change up code to not have to pass fake values to box constructor
         super(new Point(0, 0), 0, 0);
