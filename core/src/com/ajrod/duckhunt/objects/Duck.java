@@ -77,8 +77,11 @@ public class Duck extends Box {
         int scalar = rand.nextInt(3) - 1;
 
         changeTime = fallTime = stateTime = timer = 0;
-        x = DuckHunt.WIDTH / 2 + scalar * 100;
-        y = 190;
+
+        float x = DuckHunt.WIDTH / 2 + scalar * 100;
+        float y = 190;
+
+        center = new Point(x, y);
         height = 50;
         width = 50;
         offScreen = isShot = isFalling = false;
@@ -95,42 +98,42 @@ public class Duck extends Box {
             }
         } else if (isFalling) {
             fallTime += dt;
-            if (y > 190) {
-                y -= 5;
+            if (center.y > 190) {
+                center.y -= 5;
 
             } else offScreen = true;
         } else if (!offScreen) {
             stateTime += dt;
             changeDirection();
             move();
-            if (y > DuckHunt.HEIGHT + 50) offScreen = true;
+            if (center.y > DuckHunt.HEIGHT + 50) offScreen = true;
         }
     }
 
     private void move() {
         switch (direction) {
             case 0:
-                x -= speed;
+                center.x -= speed;
                 break;
             case 1:
-                x -= speed / 1.4f;
-                y += speed / 1.4f;
+                center.x -= speed / 1.4f;
+                center.y += speed / 1.4f;
                 break;
             case 2:
-                x += speed / 1.4f;
-                y += speed / 1.4f;
+                center.x += speed / 1.4f;
+                center.y += speed / 1.4f;
                 break;
             default:
-                x += speed;
+                center.x += speed;
                 break;
         }
     }
 
     private void changeDirection() {
-        if (x < DuckHunt.WIDTH / 2 - BOUNDS) {
+        if (center.x < DuckHunt.WIDTH / 2 - BOUNDS) {
             direction = rand.nextInt(2) + 2;
             changeTime = 0;
-        } else if (x > DuckHunt.WIDTH / 2 + BOUNDS) {
+        } else if (center.x > DuckHunt.WIDTH / 2 + BOUNDS) {
             direction = rand.nextInt(2);
             changeTime = 0;
         } else {
@@ -144,6 +147,9 @@ public class Duck extends Box {
 
     @Override
     public void render(SpriteBatch sb) {
+        float x = center.x;
+        float y = center.y;
+
         if (isShot) sb.draw(shot, x - width / 2, y - height / 2, width, height);
         else if (isFalling) {
             currentFrame = dead.getKeyFrame(fallTime, true);

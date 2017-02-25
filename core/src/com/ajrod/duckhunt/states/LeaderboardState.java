@@ -2,6 +2,7 @@ package com.ajrod.duckhunt.states;
 
 import com.ajrod.duckhunt.DuckHunt;
 import com.ajrod.duckhunt.objects.Button;
+import com.ajrod.duckhunt.objects.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,7 +15,7 @@ public class LeaderboardState extends State {
 
     public LeaderboardState(GSM gsm) {
         super(gsm);
-        b = new Button(DuckHunt.WIDTH / 2, 100, 2);
+        b = new Button(new Point(DuckHunt.WIDTH / 2, 100), 2);
         bg = new TextureRegion(new Texture(Gdx.files.internal("bg.png")));
     }
 
@@ -37,13 +38,17 @@ public class LeaderboardState extends State {
 
     @Override
     public void handleInput() {
-        if (Gdx.input.justTouched()) {
-            mouse.x = Gdx.input.getX();
-            mouse.y = Gdx.input.getY();
-            cam.unproject(mouse);
-            if (b.contains(mouse.x, mouse.y)) {
-                gsm.set(new MenuState(gsm));
-            }
-        }
+        if (!Gdx.input.justTouched())
+            return;
+
+        mouse.x = Gdx.input.getX();
+        mouse.y = Gdx.input.getY();
+
+        cam.unproject(mouse);
+
+        Point clickedPoint = new Point(mouse.x, mouse.y);
+
+        if (b.contains(clickedPoint))
+            gsm.set(new MenuState(gsm));
     }
 }

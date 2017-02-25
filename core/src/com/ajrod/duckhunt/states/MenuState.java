@@ -2,6 +2,7 @@ package com.ajrod.duckhunt.states;
 
 import com.ajrod.duckhunt.DuckHunt;
 import com.ajrod.duckhunt.objects.Button;
+import com.ajrod.duckhunt.objects.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,9 +17,8 @@ public class MenuState extends State {
         super(gsm);
 
         bg = new TextureRegion(new Texture(Gdx.files.internal("bg.png")));
-
-        b1 = new Button(DuckHunt.WIDTH / 2, DuckHunt.HEIGHT / 2 - 50, 0);
-        b2 = new Button(DuckHunt.WIDTH / 2, DuckHunt.HEIGHT / 2 - 150, 1);
+        b1 = new Button(new Point(DuckHunt.WIDTH / 2, DuckHunt.HEIGHT / 2 - 50), 0);
+        b2 = new Button(new Point(DuckHunt.WIDTH / 2, DuckHunt.HEIGHT / 2 - 150), 1);
     }
 
     @Override
@@ -41,15 +41,21 @@ public class MenuState extends State {
 
     @Override
     public void handleInput() {
-        if (Gdx.input.justTouched()) {
-            mouse.x = Gdx.input.getX();
-            mouse.y = Gdx.input.getY();
-            cam.unproject(mouse);
-            if (b1.contains(mouse.x, mouse.y)) {
-                gsm.set(new GameState(gsm));
-            } else if (b2.contains(mouse.x, mouse.y)) {
-                gsm.set(new LeaderboardState(gsm));
-            }
+        if (!Gdx.input.justTouched())
+            return;
+
+        mouse.x = Gdx.input.getX();
+        mouse.y = Gdx.input.getY();
+
+        cam.unproject(mouse);
+
+        Point clickedPoint = new Point(mouse.x, mouse.y);
+
+        if (b1.contains(clickedPoint)) {
+            gsm.set(new GameState(gsm));
+            return;
+        } else if (b2.contains(clickedPoint)) {
+            gsm.set(new LeaderboardState(gsm));
         }
     }
 

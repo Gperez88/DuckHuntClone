@@ -2,6 +2,7 @@ package com.ajrod.duckhunt.states;
 
 import com.ajrod.duckhunt.DuckHunt;
 import com.ajrod.duckhunt.objects.Duck;
+import com.ajrod.duckhunt.objects.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -158,8 +159,10 @@ public class GameState extends State {
 
         cam.unproject(mouse);
 
+        Point clickedPoint = new Point(mouse.x, mouse.y);
+
         for (int i = 0; i < 2; i++) {
-            if (duck[i].contains(mouse.x, mouse.y) && duck[i].isClickable()) {
+            if (duck[i].contains(clickedPoint) && duck[i].isClickable()) {
                 duck[i].onClick();
                 score += duck[i].getValue();
                 for (int j = 0; j < 6; j++) scoreCount[j] = whiteNum[(score / (int) Math.pow(10, j)) % 10];

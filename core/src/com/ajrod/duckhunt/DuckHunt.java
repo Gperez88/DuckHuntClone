@@ -39,6 +39,7 @@ public class DuckHunt extends ApplicationAdapter {
             else
                 scores[i] = 0;
         }
+
         Arrays.sort(scores);
 
         res.loadAtlas("pack.pack", "pack");
