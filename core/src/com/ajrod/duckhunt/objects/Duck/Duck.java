@@ -22,10 +22,11 @@ public abstract class Duck extends Box {
 
     protected Duck(String resourceKey) {
         // TODO: change up code to not have to pass fake values to box constructor
-        super(new Point(0, 0), 0, 0);
+        super(new Point(DuckHunt.WIDTH / 2, 190), 50, 50);
         initializeDuck(resourceKey);
     }
 
+    // TODO: reimplement randomized start location
     protected void initializeDuck(String resourceKey) {
         rand = new Random();
         currentFrame = new TextureRegion();
@@ -61,16 +62,7 @@ public abstract class Duck extends Box {
 
         direction = rand.nextInt(2) + 1;
 
-        int scalar = rand.nextInt(3) - 1;
-
         changeTime = fallTime = stateTime = 0;
-
-        float x = DuckHunt.WIDTH / 2 + scalar * 100;
-        float y = 190;
-
-        center = new Point(x, y);
-        height = 50;
-        width = 50;
         offScreen = isShot = isFalling = false;
         isClickable = true;
     }
