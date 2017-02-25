@@ -10,12 +10,13 @@ public class Button extends Box {
 
     private TextureRegion button;
     private String text;
-    private int state;
+    private float xPadding, yPadding;
 
-    public Button(Point p, int s) {
-        height = 50;
-        center = p;
-        state = s;
+    public Button(Point p, final int state) {
+        super(p, 500, 50);
+
+        xPadding = 10;
+        yPadding = 15;
 
         switch (state) {
             case 0:
@@ -41,11 +42,9 @@ public class Button extends Box {
 
     @Override
     public void render(SpriteBatch sb) {
-        float x = center.x;
-        float y = center.y;
-
-        sb.draw(button, x - width / 2, y - height / 2, width, height);
-        DuckHunt.font.draw(sb, text, x - width / 2 + 10, y + 15);
+        Point p = getLowerLeftCorner();
+        sb.draw(button, p.x, p.y, width, height);
+        DuckHunt.font.draw(sb, text, p.x + xPadding, center.y + yPadding);
     }
 
     @Override

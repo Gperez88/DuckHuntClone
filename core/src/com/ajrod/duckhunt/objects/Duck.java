@@ -10,17 +10,18 @@ import java.util.Random;
 
 public class Duck extends Box {
 
-    private final int BOUNDS = 200;
+    private final static int BOUNDS = 200;
     private int speed, direction, value; // 0 -> left, 1 -> upleft, 2 -> upright, 3 -> right
-    private boolean offScreen, onSide, isShot, isFalling, isClickable;
-    private float stateTime, timer, fallTime, changeTime;
+    private boolean offScreen, isShot, isFalling, isClickable;
+    private float stateTime, fallTime, changeTime;
 
     private Animation side, angle, dead;
     private TextureRegion shot, currentFrame;
     private Random rand;
 
     public Duck(int mode) {
-
+        // TODO: change up code to not have to pass fake values to box constructor
+        super(new Point(0, 0), 0, 0);
         rand = new Random();
         currentFrame = new TextureRegion();
 
@@ -76,7 +77,7 @@ public class Duck extends Box {
 
         int scalar = rand.nextInt(3) - 1;
 
-        changeTime = fallTime = stateTime = timer = 0;
+        changeTime = fallTime = stateTime = 0;
 
         float x = DuckHunt.WIDTH / 2 + scalar * 100;
         float y = 190;
@@ -150,34 +151,39 @@ public class Duck extends Box {
         float x = center.x;
         float y = center.y;
 
-        if (isShot) sb.draw(shot, x - width / 2, y - height / 2, width, height);
+        Point p = getLowerLeftCorner();
+
+        if (isShot)
+            sb.draw(shot, p.x, p.y, width, height);
         else if (isFalling) {
             currentFrame = dead.getKeyFrame(fallTime, true);
-            sb.draw(currentFrame, x - width / 2, y - height / 2, width - 10, height);
-        } else {
+            sb.draw(currentFrame, p.x, p.y, width - 10, height);
+        } else
             switch (direction) {
                 case 0:
                     currentFrame = side.getKeyFrame(stateTime, true);
                     if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
+                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
                     break;
                 case 1:
                     currentFrame = angle.getKeyFrame(stateTime, true);
                     if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
+                    //sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
+                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
                     break;
                 case 2:
                     currentFrame = angle.getKeyFrame(stateTime, true);
                     if (currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
+                    //sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
+                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
                     break;
                 default:
                     currentFrame = side.getKeyFrame(stateTime, true);
                     if (currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
+                    //sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
+                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
                     break;
             }
-        }
     }
 
     @Override
