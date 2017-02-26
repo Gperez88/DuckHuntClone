@@ -165,7 +165,7 @@ public class GameState extends State {
         Point clickedPoint = new Point(mouse.x, mouse.y);
 
         for (int i = 0; i < 2; i++) {
-            if (duck[i].contains(clickedPoint) && duck[i].isClickable()) {
+            if (duck[i].contains(clickedPoint) && duck[i].isAlive()) {
                 duck[i].onClick();
                 score += duck[i].getValue();
                 for (int j = 0; j < 6; j++) scoreCount[j] = whiteNum[(score / (int) Math.pow(10, j)) % 10];

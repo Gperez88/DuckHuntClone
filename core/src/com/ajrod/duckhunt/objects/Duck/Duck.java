@@ -12,17 +12,24 @@ import java.util.Random;
 public abstract class Duck extends Box {
 
     private final static int BOUNDS = 200;
-    protected int speed, direction, value; // 0 -> left, 1 -> upleft, 2 -> upright, 3 -> right
-    private boolean offScreen, isShot, isFalling, isClickable;
+    protected int speed, direction, value; // 0 -> left, 1 -> upLeft, 2 -> upRight, 3 -> right
     private float stateTime, fallTime, changeTime;
 
     private Animation side, angle, dead;
     private TextureRegion shot, currentFrame;
     private Random rand;
 
+    private State currentState;
+
     protected Duck(String resourceKey) {
         // TODO: change up code to not have to pass fake values to box constructor
         super(new Point(DuckHunt.WIDTH / 2, 190), 50, 50);
+
+        // defaults
+        speed = 3;
+        value = 500;
+        currentState = State.Flying;
+
         initializeDuck(resourceKey);
     }
 
@@ -43,8 +50,6 @@ public abstract class Duck extends Box {
         dead = DuckHunt.res.getAtlas("pack").findRegion(resourceKey + "Fall").split(20, 31);
         shot = DuckHunt.res.getAtlas("pack").findRegion(resourceKey + "Shot");
 
-        speed = 3;
-        value = 500;
 
         for (int i = 0; i < 3; i++) {
             t1[i] = side[0][i];
@@ -63,28 +68,38 @@ public abstract class Duck extends Box {
         direction = rand.nextInt(2) + 1;
 
         changeTime = fallTime = stateTime = 0;
-        offScreen = isShot = isFalling = false;
-        isClickable = true;
     }
 
     public void update(float dt) {
-        if (isShot) {
-            fallTime += dt;
-            if (fallTime > 0.5f) {
-                isShot = false;
-                isFalling = true;
-            }
-        } else if (isFalling) {
-            fallTime += dt;
-            if (center.y > 190) {
-                center.y -= 5;
+        switch(currentState) {
+            case Flying:
+                stateTime += dt;
 
-            } else offScreen = true;
-        } else if (!offScreen) {
-            stateTime += dt;
-            changeDirection();
-            move();
-            if (center.y > DuckHunt.HEIGHT + 50) offScreen = true;
+                changeDirection();
+                move();
+
+                if(center.y > DuckHunt.HEIGHT + 50)
+                    currentState = State.Offscreen;
+
+                // will transition to dying if clicked on
+                break;
+
+            case Dying:
+                fallTime += dt;
+
+                if(fallTime > 0.5f)
+                    currentState = State.Falling;
+                break;
+
+            case Falling:
+                fallTime += dt;
+
+                if(center.y <= 190)
+                    currentState = State.Offscreen;
+                else
+                    center.y -= 5;
+
+                break;
         }
     }
 
@@ -129,44 +144,45 @@ public abstract class Duck extends Box {
 
         Point p = getLowerLeftCorner();
 
-        if (isShot)
-            sb.draw(shot, p.x, p.y, width, height);
-        else if (isFalling) {
-            currentFrame = dead.getKeyFrame(fallTime, true);
-            sb.draw(currentFrame, p.x, p.y, width - 10, height);
-        } else
-            switch (direction) {
-                case 0:
-                    currentFrame = side.getKeyFrame(stateTime, true);
-                    if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
-                    break;
-                case 1:
-                    currentFrame = angle.getKeyFrame(stateTime, true);
-                    if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    //sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
-                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
-                    break;
-                case 2:
-                    currentFrame = angle.getKeyFrame(stateTime, true);
-                    if (currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    //sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
-                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
-                    break;
-                default:
-                    currentFrame = side.getKeyFrame(stateTime, true);
-                    if (currentFrame.isFlipX()) currentFrame.flip(true, false);
-                    //sb.draw(currentFrame, x - width * 0.6f, y - height * 0.6f, width * 1.2f, height * 1.2f);
-                    sb.draw(currentFrame, x - width * 0.5f, y - height * 0.5f, width * 1f, height * 1f);
-                    break;
-            }
+        switch (currentState) {
+            case Dying:
+                sb.draw(shot, p.x, p.y, width, height);
+                break;
+
+            case Falling:
+                currentFrame = dead.getKeyFrame(fallTime, true);
+                sb.draw(currentFrame, p.x, p.y, width - 10, height);
+                break;
+
+            case Flying:
+                switch (direction) {
+                    case 0:
+                        currentFrame = side.getKeyFrame(stateTime, true);
+                        if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
+                        break;
+                    case 1:
+                        currentFrame = angle.getKeyFrame(stateTime, true);
+                        if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
+                        break;
+                    case 2:
+                        currentFrame = angle.getKeyFrame(stateTime, true);
+                        if (currentFrame.isFlipX()) currentFrame.flip(true, false);
+                        break;
+                    default:
+                        currentFrame = side.getKeyFrame(stateTime, true);
+                        if (currentFrame.isFlipX()) currentFrame.flip(true, false);
+                        break;
+                }
+                sb.draw(currentFrame, p.x, p.y, width, height);
+                break;
+        }
     }
 
     public void onClick() {
-        if (isClickable) {
-            isShot = true;
-            isClickable = false;
-        }
+        if (currentState != State.Flying)
+            return;
+
+        currentState = State.Dying;
     }
 
     public int getValue() {
@@ -174,10 +190,10 @@ public abstract class Duck extends Box {
     }
 
     public boolean isGone() {
-        return offScreen;
+        return currentState == State.Offscreen;
     }
 
-    public boolean isClickable() {
-        return isClickable;
+    public boolean isAlive() {
+        return currentState == State.Flying;
     }
 }
