@@ -72,7 +72,7 @@ public class GameState extends State {
             birdIcons.add(DuckHunt.res.getAtlas("pack").findRegion("notHit"));
 
         for (int i = 0; i < NUM_BULLETS; ++i)
-            bullets.add(DuckHunt.res.getAtlas("pack").findRegion("bullets"));
+            bullets.add(DuckHunt.res.getAtlas("pack").findRegion("bullet"));
 
         for (int i = 0; i < NUM_SCORE_DIGITS; ++i)
             scoreCounts.add(whiteDigits.get(score / (10 * (i + 1))));

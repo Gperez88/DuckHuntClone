@@ -2,6 +2,7 @@ package com.ajrod.duckhunt.objects.Duck;
 
 import com.ajrod.duckhunt.DuckHunt;
 import com.ajrod.duckhunt.objects.Box;
+import com.ajrod.duckhunt.objects.Direction;
 import com.ajrod.duckhunt.objects.Point;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,13 +13,14 @@ import java.util.Random;
 public abstract class Duck extends Box {
 
     private final static int BOUNDS = 200;
-    protected int speed, direction, value; // 0 -> left, 1 -> upLeft, 2 -> upRight, 3 -> right
-    private float stateTime, fallTime, changeTime;
+    protected int speed, value;
+    private float stateTime, fallTime, timeSinceLastDirectionChange;
 
-    private Animation side, angle, dead;
+    private Animation side, angle, dead, currentAnimation;
     private TextureRegion shot, currentFrame;
     private Random rand;
 
+    private Direction direction;
     private State currentState;
 
     protected Duck(String resourceKey) {
@@ -65,9 +67,13 @@ public abstract class Duck extends Box {
         this.angle.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         this.dead.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
-        direction = rand.nextInt(2) + 1;
+        fallTime = stateTime = 0;
+        initDirection();
+    }
 
-        changeTime = fallTime = stateTime = 0;
+    private void initDirection() {
+        direction = Direction.Right;
+        setDirection(rand.nextBoolean() ? Direction.UpLeft : Direction.UpRight);
     }
 
     public void update(float dt) {
@@ -75,7 +81,12 @@ public abstract class Duck extends Box {
             case Flying:
                 stateTime += dt;
 
-                changeDirection();
+                if (outOfBounds())
+                    reverseDirection();
+
+                if (timeSinceLastDirectionChange++ >= 30)
+                    randomizeDirection();
+
                 move();
 
                 if (center.y > DuckHunt.HEIGHT + 50)
@@ -104,38 +115,28 @@ public abstract class Duck extends Box {
     }
 
     private void move() {
-        switch (direction) {
-            case 0:
-                center.x -= speed;
-                break;
-            case 1:
-                center.x -= speed / 1.4f;
-                center.y += speed / 1.4f;
-                break;
-            case 2:
-                center.x += speed / 1.4f;
-                center.y += speed / 1.4f;
-                break;
-            default:
-                center.x += speed;
-                break;
-        }
+        center.x += direction.deltaX() * speed;
+        center.y += direction.deltaY() * speed;
     }
 
-    private void changeDirection() {
-        if (center.x < DuckHunt.WIDTH / 2 - BOUNDS) {
-            direction = rand.nextInt(2) + 2;
-            changeTime = 0;
-        } else if (center.x > DuckHunt.WIDTH / 2 + BOUNDS) {
-            direction = rand.nextInt(2);
-            changeTime = 0;
-        } else {
-            changeTime += 1;
-            if (changeTime >= 30) {
-                direction = rand.nextInt(4);
-                changeTime = 0;
-            }
-        }
+    private boolean outOfBounds() {
+        return Math.abs(DuckHunt.WIDTH / 2 - center.x) > BOUNDS;
+    }
+
+    private void setDirection(Direction next) {
+        currentAnimation = next.isMovingUp() ? angle : side;
+        direction = next;
+        timeSinceLastDirectionChange = 0;
+    }
+
+    private void reverseDirection() {
+        Direction nextDirection = direction.nextValidDirections()[rand.nextInt(2)];
+        setDirection(nextDirection);
+    }
+
+    private void randomizeDirection() {
+        Direction nextDirection = Direction.values()[rand.nextInt(4)];
+        setDirection(nextDirection);
     }
 
     public void render(SpriteBatch sb) {
@@ -155,24 +156,10 @@ public abstract class Duck extends Box {
                 break;
 
             case Flying:
-                switch (direction) {
-                    case 0:
-                        currentFrame = side.getKeyFrame(stateTime, true);
-                        if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
-                        break;
-                    case 1:
-                        currentFrame = angle.getKeyFrame(stateTime, true);
-                        if (!currentFrame.isFlipX()) currentFrame.flip(true, false);
-                        break;
-                    case 2:
-                        currentFrame = angle.getKeyFrame(stateTime, true);
-                        if (currentFrame.isFlipX()) currentFrame.flip(true, false);
-                        break;
-                    default:
-                        currentFrame = side.getKeyFrame(stateTime, true);
-                        if (currentFrame.isFlipX()) currentFrame.flip(true, false);
-                        break;
-                }
+                if (direction.isMovingRight() == currentFrame.isFlipX())
+                    currentFrame.flip(true, false);
+
+                currentFrame = currentAnimation.getKeyFrame(stateTime, true);
                 sb.draw(currentFrame, p.x, p.y, width, height);
                 break;
         }
