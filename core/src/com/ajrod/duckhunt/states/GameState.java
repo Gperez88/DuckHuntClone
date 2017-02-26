@@ -170,7 +170,7 @@ public class GameState extends State {
         sb.draw(statusBox, 200, 40, statusBox.getRegionWidth() * 3.125f, statusBox.getRegionHeight() * 2.5f);
         sb.draw(roundCount, 135, 102, roundCount.getRegionWidth() * 3.125f, roundCount.getRegionHeight() * 2.5f);
 
-        for (int i = 0; i < NUM_BIRD_ICONS; ++i) {
+        for (int i = 0; i < NUM_BIRD_ICONS; i++) {
             TextureRegion birdIcon = birdIcons.get(i);
          
             sb.draw(birdIcon, 290 + (birdIcon.getRegionWidth() * 3.125f + 3) * i, 62,
