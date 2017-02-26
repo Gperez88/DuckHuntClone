@@ -37,7 +37,7 @@ public class GameState extends State {
     }
 
     private TextureRegion grass, tree, bg, roundBox, bulletBox, scoreBox, statusBox, roundCount;
-    private List<TextureRegion> bullet, birdIcons, scoreCounts;
+    private List<TextureRegion> bullets, birdIcons, scoreCounts;
     private List<Duck> ducks;
     private int round, subRound, score, ducksShot, shotsAvailable;
 
@@ -50,7 +50,7 @@ public class GameState extends State {
         subRound = 1;
         shotsAvailable = 3;
 
-        bullet = new ArrayList<TextureRegion>(NUM_BULLETS);
+        bullets = new ArrayList<TextureRegion>(NUM_BULLETS);
         birdIcons = new ArrayList<TextureRegion>(10);
         scoreCounts = new ArrayList<TextureRegion>(6);
 
@@ -73,7 +73,7 @@ public class GameState extends State {
             birdIcons.add(DuckHunt.res.getAtlas("pack").findRegion("notHit"));
 
         for (int i = 0; i < NUM_BULLETS; ++i)
-            bullet.add(DuckHunt.res.getAtlas("pack").findRegion("bullet"));
+            bullets.add(DuckHunt.res.getAtlas("pack").findRegion("bullets"));
 
         for (int i = 0; i < NUM_SCORE_DIGITS; ++i)
             scoreCounts.add(whiteDigits.get(score / (10 * (i + 1))));
@@ -110,20 +110,33 @@ public class GameState extends State {
 
     private void endRound() {
         round++;
-        if (round < 10) roundCount = greenDigits.get(round);
+        
+        if(round >= 10) {
+            endGame();
+            return;
+        }
+            
+        roundCount = greenDigits.get(round);
+        
         subRound = 1;
         ducksShot = 0;
-        for (int i = 0; i < 10; i++) {
+        
+        for (int i = 0; i < NUM_BIRD_ICONS; i++)
             birdIcons.set(i, DuckHunt.res.getAtlas("pack").findRegion("notHit"));
-        }
-        if (round == 10) {
-            if (score >= DuckHunt.scores[0]) DuckHunt.scores[0] = score;
-            Arrays.sort(DuckHunt.scores);
-            for (int i = 0; i < 10; i++)
-                DuckHunt.prefs.putInteger("score" + i, DuckHunt.scores[i]);
-            DuckHunt.prefs.flush();
-            gsm.set(new MenuState(gsm));
-        }
+    }
+    
+    private void endGame() {
+        if (score >= DuckHunt.scores[0])
+            DuckHunt.scores[0] = score;
+        
+        Arrays.sort(DuckHunt.scores);
+        
+        for (int i = 0; i < 10; i++)
+            DuckHunt.prefs.putInteger("score" + i, DuckHunt.scores[i]);
+        
+        DuckHunt.prefs.flush();
+        
+        gsm.set(new MenuState(gsm));
     }
 
     private void resetDucks(float dt) {
@@ -158,17 +171,26 @@ public class GameState extends State {
         sb.draw(statusBox, 200, 40, statusBox.getRegionWidth() * 3.125f, statusBox.getRegionHeight() * 2.5f);
         sb.draw(roundCount, 135, 102, roundCount.getRegionWidth() * 3.125f, roundCount.getRegionHeight() * 2.5f);
 
-        for (int i = 0; i < NUM_BIRD_ICONS; i++)
-            sb.draw(birdIcons.get(i), 290 + (birdIcons.get(i).getRegionWidth() * 3.125f + 3) * i, 62,
-                    birdIcons.get(i).getRegionWidth() * 3.125f, birdIcons.get(i).getRegionHeight() * 2.5f);
+        for (int i = 0; i < NUM_BIRD_ICONS; i++) {
+            TextureRegion birdIcon = birdIcons.get(i);
+         
+            sb.draw(birdIcon, 290 + (birdIcon.getRegionWidth() * 3.125f + 3) * i, 62,
+                    birdIcon.getRegionWidth() * 3.125f, birdIcon.getRegionHeight() * 2.5f);
+        }
 
-        for (int i = 0; i < shotsAvailable; ++i)
-            sb.draw(bullet.get(i), 83 + (bullet.get(i).getRegionWidth() * 3.125f + 10) * i, 65,
-                    bullet.get(i).getRegionWidth() * 3.125f, bullet.get(i).getRegionHeight() * 2.5f);
+        for (int i = 0; i < shotsAvailable; ++i) {
+            TextureRegion bullet = bullets.get(i);
+            
+            sb.draw(bullet, 83 + (bullet.getRegionWidth() * 3.125f + 10) * i, 65,
+                    bullet.getRegionWidth() * 3.125f, bullet.getRegionHeight() * 2.5f);
+        }
 
-        for (int i = 0; i < NUM_SCORE_DIGITS; ++i)
-            sb.draw(scoreCounts.get(i), (DuckHunt.WIDTH - 75) - (scoreCounts.get(i).getRegionWidth() * 3.125f + 3) * i, 64,
-                    scoreCounts.get(i).getRegionWidth() * 3.125f, scoreCounts.get(i).getRegionHeight() * 2.5f);
+        for (int i = 0; i < NUM_SCORE_DIGITS; ++i) {
+            TextureRegion scoreDigit = scoreCounts.get(i);
+
+            sb.draw(scoreDigit, (DuckHunt.WIDTH - 75) - (scoreDigit.getRegionWidth() * 3.125f + 3) * i, 64,
+                    scoreDigit.getRegionWidth() * 3.125f, scoreDigit.getRegionHeight() * 2.5f);
+        }
 
         for (Duck duck : ducks)
             duck.render(sb);
