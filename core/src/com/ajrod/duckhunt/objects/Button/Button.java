@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class Button extends Box {
 
-    private TextureRegion button;
-    protected String text;
     private final static float xPadding = 10, yPadding = 15;
+    protected String text;
+    private TextureRegion button;
 
     public Button(Point p) {
         super(p, 100, 50);  // default values

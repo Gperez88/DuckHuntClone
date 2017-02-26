@@ -71,14 +71,14 @@ public abstract class Duck extends Box {
     }
 
     public void update(float dt) {
-        switch(currentState) {
+        switch (currentState) {
             case Flying:
                 stateTime += dt;
 
                 changeDirection();
                 move();
 
-                if(center.y > DuckHunt.HEIGHT + 50)
+                if (center.y > DuckHunt.HEIGHT + 50)
                     currentState = State.Offscreen;
 
                 // will transition to dying if clicked on
@@ -87,14 +87,14 @@ public abstract class Duck extends Box {
             case Dying:
                 fallTime += dt;
 
-                if(fallTime > 0.5f)
+                if (fallTime > 0.5f)
                     currentState = State.Falling;
                 break;
 
             case Falling:
                 fallTime += dt;
 
-                if(center.y <= 190)
+                if (center.y <= 190)
                     currentState = State.Offscreen;
                 else
                     center.y -= 5;

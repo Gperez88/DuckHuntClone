@@ -1,7 +1,5 @@
 package com.ajrod.duckhunt.objects;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 public abstract class Box {
 
     protected Point center;
@@ -11,6 +9,10 @@ public abstract class Box {
         center = p;
         width = w;
         height = h;
+    }
+
+    private static boolean valuesAreWithinRadius(float a, float b, float radius) {
+        return Math.abs(b - a) < radius;
     }
 
     public final boolean contains(Point p) {
@@ -30,9 +32,5 @@ public abstract class Box {
 
     private float getLowY() {
         return center.y - height / 2;
-    }
-
-    private static boolean valuesAreWithinRadius(float a, float b, float radius) {
-        return Math.abs(b - a) < radius;
     }
 }
