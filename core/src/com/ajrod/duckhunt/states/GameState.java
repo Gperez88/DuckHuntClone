@@ -114,23 +114,20 @@ public class GameState extends State {
     private void resetDucks(float dt) {
         ducks = new ArrayList<Duck>();
 
+        // easy
         if (round < 4) {
-            if (subRound > 3) {
-                ducks.add(new EasyDuck());
-                ducks.add(new MediumDuck());
-            } else {
-                ducks.add(new EasyDuck());
-                ducks.add(new EasyDuck());
-            }
-        } else if (round < 7) {
-            if (subRound > 3) {
-                ducks.add(new MediumDuck());
-                ducks.add(new HardDuck());
-            } else {
-                ducks.add(new MediumDuck());
-                ducks.add(new MediumDuck());
-            }
-        } else {
+            ducks.add(new EasyDuck());
+            ducks.add(subRound < 4 ? new EasyDuck() : new MediumDuck());
+        }
+
+        // medium
+        else if (round < 7) {
+            ducks.add(new MediumDuck());
+            ducks.add(subRound < 4 ? new MediumDuck() : new HardDuck());
+        }
+
+        // hard
+        else {
             ducks.add(new HardDuck());
             ducks.add(new HardDuck());
         }
