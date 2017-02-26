@@ -16,28 +16,43 @@ import java.util.List;
 
 public class GameState extends State {
 
-    private final int MAX_SUBROUNDS = 5;
-    private TextureRegion grass, tree, bg, roundBox, bulletBox, scoreBox, statusBox, roundCount;
-    private TextureRegion[] bullet, birdIcon, greenNum, whiteNum, scoreCount;
-    private List<Duck> ducks;
-    private int round, subRound, score, duckHit, shots;
     private final static int NUM_BULLETS = 3;
     private final static int NUM_DUCKS = 2;
+    private final static int MAX_SUBROUNDS = 5;
+    private final static int NUM_BIRD_ICONS = 10;
+    private final static int NUM_SCORE_DIGITS = 6;
+    private final static List<TextureRegion> greenDigits, whiteDigits;
+
+    static {
+        TextureRegion[][] greenNums = DuckHunt.res.getAtlas("pack").findRegion("numGreen").split(7, 7);
+        TextureRegion[][] whiteNums = DuckHunt.res.getAtlas("pack").findRegion("numWhite").split(7, 7);
+
+        greenDigits = new ArrayList<TextureRegion>(10);
+        whiteDigits = new ArrayList<TextureRegion>(10);
+
+        for (int i = 0; i < 10; ++i) {
+            greenDigits.add(greenNums[i / 6][i % 6]);
+            whiteDigits.add(whiteNums[i / 6][i % 6]);
+        }
+    }
+
+    private TextureRegion grass, tree, bg, roundBox, bulletBox, scoreBox, statusBox, roundCount;
+    private List<TextureRegion> bullet, birdIcons, scoreCounts;
+    private List<Duck> ducks;
+    private int round, subRound, score, ducksShot, shotsAvailable;
 
     GameState(GSM gsm) {
         super(gsm);
 
-        duckHit = 0;
+        ducksShot = 0;
         score = 0;
         round = 1;
         subRound = 1;
-        shots = 3;
+        shotsAvailable = 3;
 
-        bullet = new TextureRegion[NUM_BULLETS];
-        birdIcon = new TextureRegion[10];
-        greenNum = new TextureRegion[10];
-        whiteNum = new TextureRegion[10];
-        scoreCount = new TextureRegion[6];
+        bullet = new ArrayList<TextureRegion>(NUM_BULLETS);
+        birdIcons = new ArrayList<TextureRegion>(10);
+        scoreCounts = new ArrayList<TextureRegion>(6);
 
         ducks = new ArrayList<Duck>();
 
@@ -53,41 +68,41 @@ public class GameState extends State {
         scoreBox = DuckHunt.res.getAtlas("pack").findRegion("scoreBox");
         statusBox = DuckHunt.res.getAtlas("pack").findRegion("hitBox");
 
-        TextureRegion[][] tmp1 = DuckHunt.res.getAtlas("pack").findRegion("numGreen").split(7, 7);
-        TextureRegion[][] tmp2 = DuckHunt.res.getAtlas("pack").findRegion("numWhite").split(7, 7);
 
-        for (int i = 0; i < 10; i++) {
-            birdIcon[i] = DuckHunt.res.getAtlas("pack").findRegion("notHit");
-            greenNum[i] = tmp1[i / 6][i % 6];
-            whiteNum[i] = tmp2[i / 6][i % 6];
-            if (i < NUM_BULLETS) bullet[i] = DuckHunt.res.getAtlas("pack").findRegion("bullet");
-            if (i < 6) scoreCount[i] = whiteNum[score / (10 * (i + 1))];
-        }
+        for (int i = 0; i < NUM_BIRD_ICONS; i++)
+            birdIcons.add(DuckHunt.res.getAtlas("pack").findRegion("notHit"));
 
-        roundCount = greenNum[1];
+        for (int i = 0; i < NUM_BULLETS; ++i)
+            bullet.add(DuckHunt.res.getAtlas("pack").findRegion("bullet"));
+
+        for (int i = 0; i < NUM_SCORE_DIGITS; ++i)
+            scoreCounts.add(whiteDigits.get(score / (10 * (i + 1))));
+
+        roundCount = greenDigits.get(1);
 
     }
 
     @Override
     public void update(float dt) {
         handleInput();
+
         for (Duck duck : ducks)
             duck.update(dt);
 
-
         if (allDucksAreGone()) {
             subRound++;
-            shots = 3;
-            if (subRound > MAX_SUBROUNDS) {
+
+            if (subRound > MAX_SUBROUNDS)
                 endRound();
-            }
+
+            shotsAvailable = 3;
             resetDucks(dt);
         }
     }
 
     private boolean allDucksAreGone() {
-        for(Duck duck : ducks)
-            if(!duck.isGone())
+        for (Duck duck : ducks)
+            if (!duck.isGone())
                 return false;
 
         return true;
@@ -95,11 +110,11 @@ public class GameState extends State {
 
     private void endRound() {
         round++;
-        if (round < 10) roundCount = greenNum[round];
+        if (round < 10) roundCount = greenDigits.get(round);
         subRound = 1;
-        duckHit = 0;
+        ducksShot = 0;
         for (int i = 0; i < 10; i++) {
-            birdIcon[i] = DuckHunt.res.getAtlas("pack").findRegion("notHit");
+            birdIcons.set(i, DuckHunt.res.getAtlas("pack").findRegion("notHit"));
         }
         if (round == 10) {
             if (score >= DuckHunt.scores[0]) DuckHunt.scores[0] = score;
@@ -112,7 +127,7 @@ public class GameState extends State {
     }
 
     private void resetDucks(float dt) {
-        ducks = new ArrayList<Duck>();
+        ducks.clear();
 
         // easy
         if (round < 4) {
@@ -142,15 +157,18 @@ public class GameState extends State {
         sb.draw(scoreBox, DuckHunt.WIDTH - 200, 42, scoreBox.getRegionWidth() * 3.125f, scoreBox.getRegionHeight() * 2.5f);
         sb.draw(statusBox, 200, 40, statusBox.getRegionWidth() * 3.125f, statusBox.getRegionHeight() * 2.5f);
         sb.draw(roundCount, 135, 102, roundCount.getRegionWidth() * 3.125f, roundCount.getRegionHeight() * 2.5f);
-        for (int i = 0; i < 10; i++) {
-            sb.draw(birdIcon[i], 290 + (birdIcon[0].getRegionWidth() * 3.125f + 3) * i, 62,
-                    birdIcon[0].getRegionWidth() * 3.125f, birdIcon[0].getRegionHeight() * 2.5f);
-            if (i < shots) sb.draw(bullet[i], 83 + (bullet[0].getRegionWidth() * 3.125f + 10) * i, 65,
-                    bullet[0].getRegionWidth() * 3.125f, bullet[0].getRegionHeight() * 2.5f);
-            if (i < 6)
-                sb.draw(scoreCount[i], (DuckHunt.WIDTH - 75) - (scoreCount[0].getRegionWidth() * 3.125f + 3) * i, 64,
-                        scoreCount[0].getRegionWidth() * 3.125f, scoreCount[0].getRegionHeight() * 2.5f);
-        }
+
+        for (int i = 0; i < NUM_BIRD_ICONS; i++)
+            sb.draw(birdIcons.get(i), 290 + (birdIcons.get(i).getRegionWidth() * 3.125f + 3) * i, 62,
+                    birdIcons.get(i).getRegionWidth() * 3.125f, birdIcons.get(i).getRegionHeight() * 2.5f);
+
+        for (int i = 0; i < shotsAvailable; ++i)
+            sb.draw(bullet.get(i), 83 + (bullet.get(i).getRegionWidth() * 3.125f + 10) * i, 65,
+                    bullet.get(i).getRegionWidth() * 3.125f, bullet.get(i).getRegionHeight() * 2.5f);
+
+        for (int i = 0; i < NUM_SCORE_DIGITS; ++i)
+            sb.draw(scoreCounts.get(i), (DuckHunt.WIDTH - 75) - (scoreCounts.get(i).getRegionWidth() * 3.125f + 3) * i, 64,
+                    scoreCounts.get(i).getRegionWidth() * 3.125f, scoreCounts.get(i).getRegionHeight() * 2.5f);
 
         for (Duck duck : ducks)
             duck.render(sb);
@@ -165,7 +183,7 @@ public class GameState extends State {
         if (!Gdx.input.justTouched())
             return;
 
-        if (--shots < 0)
+        if (--shotsAvailable < 0)
             return;
 
         mouse.x = Gdx.input.getX();
@@ -177,10 +195,10 @@ public class GameState extends State {
 
         for (Duck duck : ducks) {
             if (duck.isAlive() && duck.contains(clickedPoint)) {
-                duckHit++;
+                ducksShot++;
                 duck.onClick();
                 updateScore(duck.getValue());
-                birdIcon[duckHit - 1] = DuckHunt.res.getAtlas("pack").findRegion("hit");
+                birdIcons.set(ducksShot - 1, DuckHunt.res.getAtlas("pack").findRegion("hit"));
             }
         }
     }
@@ -188,8 +206,8 @@ public class GameState extends State {
     private void updateScore(int value) {
         score += value;
 
-        for (int j = 0; j < 6; j++)
-            scoreCount[j] = whiteNum[(score / (int) Math.pow(10, j)) % 10];
+        for (int i = 0; i < NUM_SCORE_DIGITS; i++)
+            scoreCounts.set(i, whiteDigits.get((score / (int) Math.pow(10, i)) % 10));
     }
 
 }
