@@ -6,7 +6,6 @@ import com.ajrod.duckhunt.objects.Duck.EasyDuck;
 import com.ajrod.duckhunt.objects.Duck.HardDuck;
 import com.ajrod.duckhunt.objects.Duck.MediumDuck;
 import com.ajrod.duckhunt.objects.Point;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -84,7 +83,7 @@ public class GameState extends State {
 
     @Override
     public void update(float dt) {
-        handleInput();
+        super.processMouse();
 
         for (Duck duck : ducks)
             duck.update(dt);
@@ -201,19 +200,9 @@ public class GameState extends State {
     }
 
     @Override
-    public void handleInput() {
-        if (!Gdx.input.justTouched())
-            return;
-
+    public void onSuccessfulMouseClick(Point clickedPoint) {
         if (--shotsAvailable < 0)
             return;
-
-        mouse.x = Gdx.input.getX();
-        mouse.y = Gdx.input.getY();
-
-        cam.unproject(mouse);
-
-        Point clickedPoint = new Point(mouse.x, mouse.y);
 
         for (Duck duck : ducks) {
             if (duck.isAlive() && duck.contains(clickedPoint)) {

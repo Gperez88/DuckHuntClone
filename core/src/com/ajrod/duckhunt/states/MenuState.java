@@ -25,7 +25,7 @@ public class MenuState extends State {
 
     @Override
     public void update(float dt) {
-        handleInput();
+        super.processMouse();
     }
 
     @Override
@@ -42,21 +42,10 @@ public class MenuState extends State {
     }
 
     @Override
-    public void handleInput() {
-        if (!Gdx.input.justTouched())
-            return;
-
-        mouse.x = Gdx.input.getX();
-        mouse.y = Gdx.input.getY();
-
-        cam.unproject(mouse);
-
-        Point clickedPoint = new Point(mouse.x, mouse.y);
-
-        if (playButton.contains(clickedPoint)) {
+    public void onSuccessfulMouseClick(Point clickedPoint) {
+        if (playButton.contains(clickedPoint))
             gsm.set(new GameState(gsm));
-            return;
-        } else if (leaderboardsButton.contains(clickedPoint)) {
+        else if (leaderboardsButton.contains(clickedPoint)) {
             gsm.set(new LeaderboardState(gsm));
         }
     }

@@ -1,16 +1,18 @@
 package com.ajrod.duckhunt.states;
 
 import com.ajrod.duckhunt.DuckHunt;
+import com.ajrod.duckhunt.objects.Point;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public abstract class State {
-    protected GSM gsm;
-    protected OrthographicCamera cam;
-    protected Vector3 mouse;
+    GSM gsm;
+    private OrthographicCamera cam;
+    private Vector3 mouse;
 
-    protected State(GSM gsm) {
+    State(GSM gsm) {
         this.gsm = gsm;
         cam = new OrthographicCamera();
         cam.setToOrtho(false, DuckHunt.WIDTH, DuckHunt.HEIGHT);
@@ -21,6 +23,20 @@ public abstract class State {
 
     public abstract void render(SpriteBatch sb);
 
-    public abstract void handleInput();
+    protected final void processMouse() {
+        if (!Gdx.input.justTouched())
+            return;
+
+        mouse.x = Gdx.input.getX();
+        mouse.y = Gdx.input.getY();
+
+        cam.unproject(mouse);
+
+        Point clickedPoint = new Point(mouse.x, mouse.y);
+
+        onSuccessfulMouseClick(clickedPoint);
+    }
+
+    public abstract void onSuccessfulMouseClick(Point p);
 
 }

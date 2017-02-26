@@ -14,7 +14,7 @@ public class LeaderboardState extends State {
     private Button backButton;
     private TextureRegion bg;
 
-    public LeaderboardState(GSM gsm) {
+    LeaderboardState(GSM gsm) {
         super(gsm);
         backButton = new BackButton(new Point(DuckHunt.WIDTH / 2, 100));
         bg = new TextureRegion(new Texture(Gdx.files.internal("bg.png")));
@@ -22,7 +22,7 @@ public class LeaderboardState extends State {
 
     @Override
     public void update(float dt) {
-        handleInput();
+        super.processMouse();
     }
 
     @Override
@@ -38,17 +38,7 @@ public class LeaderboardState extends State {
     }
 
     @Override
-    public void handleInput() {
-        if (!Gdx.input.justTouched())
-            return;
-
-        mouse.x = Gdx.input.getX();
-        mouse.y = Gdx.input.getY();
-
-        cam.unproject(mouse);
-
-        Point clickedPoint = new Point(mouse.x, mouse.y);
-
+    public void onSuccessfulMouseClick(Point clickedPoint) {
         if (backButton.contains(clickedPoint))
             gsm.set(new MenuState(gsm));
     }

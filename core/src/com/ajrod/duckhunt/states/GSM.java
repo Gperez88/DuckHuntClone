@@ -19,8 +19,8 @@ public class GSM {
         states.pop();
     }
 
-    public void set(State s) {
-        states.pop();
+    void set(State s) {
+        pop();
         states.push(s);
     }
 
